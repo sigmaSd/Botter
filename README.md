@@ -21,3 +21,6 @@ class MyBot(Bot.Bot):
 bot = MyBot()
 bot.run()
 ```
+
+### Credits
+https://github.com/meeuw/injectinput
