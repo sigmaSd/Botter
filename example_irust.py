@@ -1,6 +1,5 @@
 #!/bin/python
 from Botter import Bot
-import time
 
 # This example assumes an AZERTY keyboard
 
