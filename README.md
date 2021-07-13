@@ -1,4 +1,4 @@
-# Botter
+# Botter (linux evdev)
 
 ## Example
 ```python
