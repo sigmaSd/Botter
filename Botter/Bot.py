@@ -8,15 +8,14 @@ class Bot(evdev.UInput):
     # Constructor #
     ###############
     def __init__(self):  # override
-        super().__init__(evdev.util.find_ecodes_by_regex(
-            r"KEY_([A-Z0-9]|SPACE|LEFTSHIFT|LEFTMETA|ENTER)$"))
+        super().__init__(evdev.util.find_ecodes_by_regex(r"KEY_(.*)$"))
 
     ###########
     # Private #
     ###########
-    def _syn(self):  # override
+    def _syn(self, delay):  # override
         super().syn()
-        time.sleep(0.05)
+        time.sleep(delay)
 
     def _set_meta(self, key):
         key = evdev.ecodes.ecodes[key]
@@ -34,17 +33,23 @@ class Bot(evdev.UInput):
         self._set_meta(mod)
         yield  # code will run here
         self._unset_meta(mod)
-    def send_letters(self, keys):
+
+    def send_keys(self, keys, delay=0.0):
         for key in keys:
-            key = evdev.ecodes.ecodes["KEY_" + key.upper()]
-            self.write(evdev.ecodes.EV_KEY, key, 1)
-            self.write(evdev.ecodes.EV_KEY, key, 0)
-        self._syn()
-    def send_key(self, key):
+            if key == " ":
+                self.send_key("KEY_SPACE", delay)
+            elif key == "+":
+                self.send_key("KEY_KPPLUS", delay)
+            else:
+                self.send_key("KEY_" + key.upper(), delay)
+        self._syn(delay)
+
+    def send_key(self, key, delay=0.0):
         key = evdev.ecodes.ecodes[key]
         self.write(evdev.ecodes.EV_KEY, key, 1)
         self.write(evdev.ecodes.EV_KEY, key, 0)
-        self._syn()
+        self._syn(delay)
+
     def run(self):
         self.bot()
         self.close()
